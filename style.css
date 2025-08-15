@@ -1,3 +1,4 @@
+/* バナナレポーター v6.4 完全修正版 CSS */
 /* CSS変数定義 */
 :root {
     --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -184,6 +185,27 @@ body {
 
 .form-control:invalid {
     border-color: #dc3545;
+}
+
+/* 日付フィールドのはみ出し修正 */
+.date-input,
+input[type="date"] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    font-size: 16px; /* iOS自動ズーム防止 */
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.date-input:focus,
+input[type="date"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-text {
@@ -695,7 +717,7 @@ body {
     border-radius: var(--border-radius);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
     animation: slideUp 0.3s ease-out;
@@ -745,8 +767,91 @@ body {
     color: var(--dark);
 }
 
+/* タグ入力UI */
+.tag-input-container {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+    min-height: 60px;
+}
+
+.tag-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.tag {
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 3px;
+    animation: slideIn 0.2s ease-out;
+}
+
+.tag .remove {
+    cursor: pointer;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.tag .remove:hover {
+    color: #ffcccc;
+}
+
+/* ユーザーテーブル */
+.user-table-container {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-table th,
+.user-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.user-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.user-table tr:hover {
+    background: #f8f9fa;
+}
+
+.user-table .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    margin: 0 2px;
+}
+
 /* パラメータ設定 */
-.param-grid {
+.color-param-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
@@ -804,6 +909,14 @@ body {
     border-radius: 4px;
 }
 
+/* ユーザー追加フォーム */
+.user-add-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
 /* ロール別表示制御 */
 .role-admin {
     display: none;
@@ -826,8 +939,16 @@ body.user-admin .role-expert {
     display: block;
 }
 
+body.user-admin .role-user {
+    display: block;
+}
+
 /* 達人ログイン時 */
 body.user-expert .role-expert {
+    display: block;
+}
+
+body.user-expert .role-user {
     display: block;
 }
 
@@ -936,8 +1057,17 @@ body.user-expert .role-expert {
         padding: 20px;
     }
     
-    .param-grid {
+    .color-param-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .user-table {
+        font-size: 12px;
+    }
+    
+    .user-table th,
+    .user-table td {
+        padding: 8px 10px;
     }
 }
 
@@ -977,11 +1107,16 @@ body.user-expert .role-expert {
     .stage-value {
         font-size: 20px;
     }
-}
-
-/* ダークモード対応（将来的に） */
-@media (prefers-color-scheme: dark) {
-    /* ダークモーススタイルは将来のバージョンで実装 */
+    
+    .tag-input-container {
+        min-height: 50px;
+        padding: 6px;
+    }
+    
+    .tag {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
 }
 
 /* 印刷スタイル */
@@ -1001,5 +1136,10 @@ body.user-expert .role-expert {
     body {
         background: white !important;
         color: black !important;
+    }
+    
+    .header {
+        color: black !important;
+        background: white !important;
     }
 }
