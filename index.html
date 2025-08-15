@@ -6,21 +6,21 @@
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>バナナレポーター v6.4</title>
+    <title>バナナレポーター v6.5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 認証画面 -->
-    <div id="authScreen" class="auth-screen">
+    <div class="auth-screen" id="authScreen">
         <div class="container">
             <div class="auth-card">
                 <div class="header">
                     <h1>🍌 バナナレポーター</h1>
-                    <p class="subtitle">品質管理システム v6.4</p>
+                    <p class="subtitle">品質管理システム v6.5</p>
                     <p class="version-info">完全修正版</p>
                 </div>
 
-                <div class="alert" id="authAlert"></div>
+                <div class="alert hidden" id="authAlert"></div>
 
                 <form class="auth-form" id="loginForm">
                     <div class="form-group">
@@ -38,17 +38,16 @@
                     </button>
                 </form>
 
-                <div class="loading" id="loginLoading">
+                <div class="loading hidden" id="loginLoading">
                     <div class="spinner"></div>
                     <p>認証中...</p>
                 </div>
-
             </div>
         </div>
     </div>
 
     <!-- メイン画面 -->
-    <div id="mainScreen" class="hidden">
+    <div class="container hidden" id="mainScreen">
         <div class="container">
             <!-- ヘッダー -->
             <div class="header">
@@ -275,21 +274,13 @@
 
                     <div class="form-group">
                         <label class="form-label" id="quantityLabel">数量</label>
-                        <input type="number" class="form-control" id="quantity" min="0" step="1">
+                        <input type="number" class="form-control" id="claimQuantity" min="0" step="1">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" id="unitLabel">単位</label>
-                        <select class="form-control" id="unit">
-                            <option value="本（個別）">本（個別）</option>
-                            <option value="房（束）">房（束）</option>
-                            <option value="袋（パック）">袋（パック）</option>
-                            <option value="箱（ボックス）">箱（ボックス）</option>
-                            <option value="ケース">ケース</option>
-                            <option value="パレット">パレット</option>
-                            <option value="コンテナ">コンテナ</option>
-                            <option value="キログラム">キログラム</option>
-                            <option value="その他">その他</option>
+                        <select class="form-control" id="claimUnit">
+                            <option value="">選択してください</option>
                         </select>
                     </div>
 
@@ -321,7 +312,7 @@
                 <button class="btn btn-warning" id="resetBtn">🔄 リセット</button>
             </div>
 
-            <!-- 管理者ボタン -->
+            <!-- 管理者ボタン（adminのみ） -->
             <div class="admin-btn-group hidden" id="adminBtnGroup">
                 <button class="btn btn-outline role-admin role-expert" id="adminSettingsBtn">⚙️ 設定</button>
             </div>
@@ -347,8 +338,8 @@
                     <h4 class="mb-10">必須/任意項目設定</h4>
                     <div class="card">
                         <div class="tag-input-container" id="requiredFieldsContainer">
+                            <div class="tag-container" id="requiredFieldsTags"></div>
                             <input type="text" class="tag-input" id="requiredFieldInput" placeholder="必須項目を入力してEnter">
-                            <div class="tag-list" id="requiredFieldsList"></div>
                         </div>
                         <small class="form-text">例: クレーム種別, 納品日, 商品名</small>
                     </div>
@@ -359,10 +350,10 @@
                     <h4 class="mb-10">クレーム種別管理</h4>
                     <div class="card">
                         <div class="tag-input-container" id="claimTypesContainer">
+                            <div class="tag-container" id="claimTypesTags"></div>
                             <input type="text" class="tag-input" id="claimTypeInput" placeholder="クレーム種別を入力してEnter">
-                            <div class="tag-list" id="claimTypesList"></div>
                         </div>
-                        <small class="form-text">例: 軸腐れ・先腐れ, 傷, 病害虫</small>
+                        <small class="form-text">例: 過熟, 未熟, くされ, おされ＆傷, カビ, 青ぶく, 黄ぶく</small>
                     </div>
                 </div>
 
@@ -383,7 +374,7 @@
                                 <label class="form-label">ロール</label>
                                 <select class="form-control" id="newUserRole">
                                     <option value="user">一般ユーザー</option>
-                                    <option value="expert">達人ユーザー</option>
+                                    <option value="expert">エキスパート</option>
                                     <option value="admin">管理者</option>
                                 </select>
                             </div>
@@ -395,104 +386,71 @@
                         </div>
                         
                         <h5 class="mt-20 mb-10">登録ユーザー一覧</h5>
-                        <div class="user-table-container">
-                            <table class="user-table" id="userTable">
-                                <thead>
-                                    <tr>
-                                        <th>ユーザーID</th>
-                                        <th>ロール</th>
-                                        <th>使用回数</th>
-                                        <th>上限</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="userTableBody">
-                                </tbody>
-                            </table>
+                        <div class="user-table-container" id="userTableContainer">
+                            <!-- ユーザーテーブルはJavaScriptで生成 -->
                         </div>
                     </div>
                 </div>
 
                 <!-- カラー設定詳細版（達人・管理者） -->
                 <div class="role-admin role-expert">
-                    <h4 class="mb-10">カラー設定詳細版</h4>
+                    <h4 class="mb-10">カラー設定詳細版（将来実装）</h4>
                     <div class="card">
                         <div class="color-param-grid">
                             <div class="param-group">
                                 <label class="param-label">緑色 色相範囲（開始）</label>
-                                <input type="range" class="param-range" id="greenHueMin" min="0" max="360" value="80">
+                                <input type="range" class="param-range" id="greenHueMin" min="0" max="360" value="80" disabled>
                                 <span class="param-value">80</span>
                             </div>
                             <div class="param-group">
                                 <label class="param-label">緑色 色相範囲（終了）</label>
-                                <input type="range" class="param-range" id="greenHueMax" min="0" max="360" value="140">
+                                <input type="range" class="param-range" id="greenHueMax" min="0" max="360" value="140" disabled>
                                 <span class="param-value">140</span>
-                            </div>
-                            <div class="param-group">
-                                <label class="param-label">緑色 彩度閾値</label>
-                                <input type="range" class="param-range" id="greenSaturation" min="0" max="100" value="30">
-                                <span class="param-value">30%</span>
-                            </div>
-                            <div class="param-group">
-                                <label class="param-label">黄色 色相範囲（開始）</label>
-                                <input type="range" class="param-range" id="yellowHueMin" min="0" max="360" value="45">
-                                <span class="param-value">45</span>
-                            </div>
-                            <div class="param-group">
-                                <label class="param-label">黄色 色相範囲（終了）</label>
-                                <input type="range" class="param-range" id="yellowHueMax" min="0" max="360" value="65">
-                                <span class="param-value">65</span>
-                            </div>
-                            <div class="param-group">
-                                <label class="param-label">スポット 明度最小値</label>
-                                <input type="range" class="param-range" id="spotValueMin" min="0" max="100" value="30">
-                                <span class="param-value">30%</span>
                             </div>
                         </div>
                         <div class="btn-group mt-20">
-                            <button class="btn btn-success" id="saveColorParamsBtn">詳細設定保存</button>
-                            <button class="btn btn-warning" id="resetColorParamsBtn">初期値に戻す</button>
+                            <button class="btn btn-success" id="saveColorParamsBtn" disabled>詳細設定保存（将来実装）</button>
+                            <button class="btn btn-warning" id="resetColorParamsBtn" disabled>初期値に戻す（将来実装）</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- CSVインポート機能（管理者のみ） -->
                 <div class="role-admin">
-                    <h4 class="mb-10">CSV設定インポート</h4>
+                    <h4 class="mb-10">CSV設定インポート（将来実装）</h4>
                     <div class="card">
                         <div class="form-group">
                             <label class="form-label">CSVファイル選択</label>
-                            <input type="file" class="form-control" id="csvImportInput" accept=".csv">
+                            <input type="file" class="form-control" id="csvImportInput" accept=".csv" disabled>
                         </div>
-                        <button class="btn btn-info" id="importCsvBtn">設定インポート</button>
+                        <button class="btn btn-info" id="importCsvBtn" disabled>設定インポート（将来実装）</button>
                         <small class="form-text">カラー設定をCSVファイルから読み込みます</small>
                     </div>
                 </div>
 
                 <!-- パスワード変更機能 -->
                 <div class="role-admin role-expert role-user">
-                    <h4 class="mb-10">パスワード変更</h4>
+                    <h4 class="mb-10">パスワード変更（将来実装）</h4>
                     <div class="card">
                         <div class="form-group">
                             <label class="form-label">現在のパスワード</label>
-                            <input type="password" class="form-control" id="currentPassword">
+                            <input type="password" class="form-control" id="currentPassword" disabled>
                         </div>
                         <div class="form-group">
                             <label class="form-label">新しいパスワード</label>
-                            <input type="password" class="form-control" id="newPassword">
+                            <input type="password" class="form-control" id="newPassword" disabled>
                         </div>
                         <div class="form-group">
                             <label class="form-label">新しいパスワード（確認）</label>
-                            <input type="password" class="form-control" id="confirmPassword">
+                            <input type="password" class="form-control" id="confirmPassword" disabled>
                         </div>
-                        <button class="btn btn-primary" id="changePasswordBtn">パスワード変更</button>
+                        <button class="btn btn-primary" id="changePasswordBtn" disabled>パスワード変更（将来実装）</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript読み込み -->
     <script src="app.js"></script>
 </body>
 </html>
