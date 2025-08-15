@@ -5,448 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>バナナレポーター v6.5</title>
+    <title>バナナレポーター v6.6</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 認証画面 -->
     <div class="auth-screen" id="authScreen">
-        <div class="container">
-            <div class="auth-card">
-                <div class="header">
-                    <h1>🍌 バナナレポーター</h1>
-                    <p class="subtitle">品質管理システム v6.5</p>
-                    <p class="version-info">完全修正版</p>
-                </div>
-
-                <div class="alert hidden" id="authAlert"></div>
-
-                <form class="auth-form" id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label">ユーザーID</label>
-                        <input type="text" class="form-control" id="userId" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">パスワード</label>
-                        <input type="password" class="form-control" id="password" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
-                        ログイン
-                    </button>
-                </form>
-
-                <div class="loading hidden" id="loginLoading">
-                    <div class="spinner"></div>
-                    <p>認証中...</p>
-                </div>
+        <div class="auth-card">
+            <h2 class="auth-title">🍌 バナナレポーター</h2>
+            <div class="form-group">
+                <label class="form-label">ユーザーID</label>
+                <input type="text" class="form-control" id="userId" autocomplete="username">
             </div>
+            <div class="form-group">
+                <label class="form-label">パスワード</label>
+                <input type="password" class="form-control" id="password" autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary btn-block" id="loginBtn">ログイン</button>
+            <div id="loginError" class="error-message hidden"></div>
         </div>
     </div>
 
     <!-- メイン画面 -->
     <div class="container hidden" id="mainScreen">
-        <div class="container">
-            <!-- ヘッダー -->
-            <div class="header">
-                <h1>🍌 バナナレポーター</h1>
-                <div class="user-info">
-                    <span class="user-name" id="userName">ゲスト</span>
-                    <span class="user-role" id="userRole">GUEST</span>
-                    <button class="btn btn-outline" id="logoutBtn">ログアウト</button>
-                </div>
+        <div class="header">
+            <h1>🍌 バナナレポーター</h1>
+            <div class="subtitle">品質管理システム v6.6 - <span id="currentUserDisplay"></span></div>
+        </div>
+
+        <!-- 画像入力セクション -->
+        <div class="card">
+            <h3>📸 画像入力</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="cameraBtn">📷 カメラ撮影</button>
+                <button class="btn btn-secondary" id="fileBtn">📁 ファイル選択</button>
             </div>
-
-            <!-- アラート表示 -->
-            <div class="alert hidden" id="mainAlert"></div>
-
-            <!-- 画像入力セクション -->
-            <div class="card">
-                <h3 class="mb-10">📷 画像入力</h3>
-                <div class="image-input-section">
-                    <div class="btn-group">
-                        <label class="btn btn-primary" for="cameraInput">
-                            📱 カメラ撮影
-                            <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
-                        </label>
-                        <label class="btn btn-secondary" for="fileInput">
-                            📁 ファイル選択
-                            <input type="file" id="fileInput" accept="image/*" class="hidden">
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="image-preview" id="imagePreview">
-                    <div class="image-placeholder">画像が選択されていません</div>
-                </div>
+            <input type="file" class="file-input hidden" id="cameraInput" accept="image/*" capture="environment">
+            <input type="file" class="file-input hidden" id="fileInput" accept="image/*">
+            
+            <div class="image-preview" id="imagePreview">
+                <div class="image-placeholder">画像が選択されていません</div>
             </div>
 
             <!-- 目視判定セクション -->
-            <div class="visual-judgment-section hidden" id="visualJudgmentCard">
-                <h4 class="mb-10">👁️ 目視判定（任意）</h4>
-                <p class="form-text">アプリ判定と異なる場合のみ選択してください</p>
-                
-                <div class="visual-color-chart">
-                    <div class="visual-color-item" data-level="2">
-                        <div class="color-circle color-2"></div>
-                        <div class="color-level">2</div>
-                        <div class="color-name">オール<br>グリーン</div>
-                    </div>
-                    <div class="visual-color-item" data-level="3">
-                        <div class="color-circle color-3"></div>
-                        <div class="color-level">3</div>
-                        <div class="color-name">ライト<br>グリーン</div>
-                    </div>
-                    <div class="visual-color-item" data-level="4">
-                        <div class="color-circle color-4"></div>
-                        <div class="color-level">4</div>
-                        <div class="color-name">ハーフ<br>グリーン</div>
-                    </div>
-                    <div class="visual-color-item" data-level="5">
-                        <div class="color-circle color-5"></div>
-                        <div class="color-level">5</div>
-                        <div class="color-name">グリーン<br>チップ</div>
-                    </div>
-                    <div class="visual-color-item" data-level="6">
-                        <div class="color-circle color-6"></div>
-                        <div class="color-level">6</div>
-                        <div class="color-name">フル<br>イエロー</div>
-                    </div>
-                    <div class="visual-color-item" data-level="7">
-                        <div class="color-circle color-7"></div>
-                        <div class="color-level">7</div>
-                        <div class="color-name">スター</div>
-                    </div>
-                    <div class="visual-color-item" data-level="8">
-                        <div class="color-circle color-8"></div>
-                        <div class="color-level">8</div>
-                        <div class="color-name"></div>
-                    </div>
-                    <div class="visual-color-item" data-level="9">
-                        <div class="color-circle color-9"></div>
-                        <div class="color-level">9</div>
-                        <div class="color-name"></div>
-                    </div>
-                </div>
-                
-                <div class="form-group mt-10">
-                    <input type="text" class="form-control" id="visualJudgmentMemo" 
-                           placeholder="判定理由やメモ（任意）">
-                </div>
+            <div class="visual-judgment-section hidden" id="visualJudgment">
+                <h4>👁️ 目視判定（任意）</h4>
+                <div class="visual-color-chart" id="visualColorChart"></div>
+                <input type="text" class="form-control" id="visualJudgmentMemo" placeholder="判定理由やメモ（任意）">
             </div>
 
-            <!-- 解析実行ボタン -->
-            <div class="analyze-button-container">
-                <button class="btn btn-success btn-analyze" id="analyzeBtn" disabled>
-                    🔍 解析実行
-                </button>
+            <button class="btn btn-success btn-analyze" id="analyzeBtn" disabled>🔍 解析実行</button>
+        </div>
+
+        <!-- カラーチャート -->
+        <div class="card">
+            <h3>🎨 カラーチャート</h3>
+            <div class="color-chart" id="colorChart"></div>
+        </div>
+
+        <!-- 解析結果 -->
+        <div class="card hidden" id="resultCard">
+            <h3>📊 解析結果</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <!-- 商品情報入力 -->
+        <div class="card">
+            <h3>📝 商品情報</h3>
+            
+            <div class="form-group">
+                <label class="form-label">クレーム種別 <span class="required">*</span></label>
+                <select class="form-select" id="claimType">
+                    <option value="">選択してください</option>
+                </select>
             </div>
 
-            <!-- カラーチャート表示セクション -->
-            <div class="card">
-                <h3 class="mb-10">🎨 カラーチャート</h3>
-                <div class="color-chart">
-                    <div class="color-item clickable" data-level="2">
-                        <div class="color-circle color-2"></div>
-                        <div class="color-info">
-                            <div class="color-level">2</div>
-                            <div class="color-name">オールグリーン</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="3">
-                        <div class="color-circle color-3"></div>
-                        <div class="color-info">
-                            <div class="color-level">3</div>
-                            <div class="color-name">ライトグリーン</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="4">
-                        <div class="color-circle color-4"></div>
-                        <div class="color-info">
-                            <div class="color-level">4</div>
-                            <div class="color-name">ハーフグリーン</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="5">
-                        <div class="color-circle color-5"></div>
-                        <div class="color-info">
-                            <div class="color-level">5</div>
-                            <div class="color-name">グリーンチップ</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="6">
-                        <div class="color-circle color-6"></div>
-                        <div class="color-info">
-                            <div class="color-level">6</div>
-                            <div class="color-name">フルイエロー</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="7">
-                        <div class="color-circle color-7"></div>
-                        <div class="color-info">
-                            <div class="color-level">7</div>
-                            <div class="color-name">スター</div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="8">
-                        <div class="color-circle color-8"></div>
-                        <div class="color-info">
-                            <div class="color-level">8</div>
-                            <div class="color-name"></div>
-                        </div>
-                    </div>
-                    <div class="color-item clickable" data-level="9">
-                        <div class="color-circle color-9"></div>
-                        <div class="color-info">
-                            <div class="color-level">9</div>
-                            <div class="color-name"></div>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label class="form-label">納品日 <span class="required">*</span></label>
+                <input type="date" class="form-control" id="deliveryDate">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">撮影日 <span class="required">*</span></label>
+                <input type="date" class="form-control" id="captureDate">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">商品名 <span class="required">*</span></label>
+                <input type="text" class="form-control" id="productName" placeholder="例: フィリピン産バナナ">
+            </div>
+
+            <div class="code-fields">
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code1Label">汎用コード1</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(1)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code2Label">汎用コード2</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(2)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code3Label">汎用コード3</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(3)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code3">
                 </div>
             </div>
 
-            <!-- 解析結果表示セクション -->
-            <div class="card hidden" id="resultCard">
-                <h3 class="mb-20">📊 解析結果</h3>
-                <div class="result-section">
-                    <div class="ripeness-indicator" id="ripenessIndicator">
-                        <div class="ripeness-stage" id="ripenessStage">
-                            <span class="stage-label">熟度判定</span>
-                            <span class="stage-value" id="stageValue">-</span>
-                        </div>
-                        <div class="ripeness-visual" id="ripenessVisual">
-                            <!-- カラーチャート連動表示 -->
-                        </div>
-                    </div>
-                    <div class="result-details">
-                        <div class="description-box" id="descriptionBox">
-                            <h4>状態説明</h4>
-                            <p id="stageDescription">-</p>
-                        </div>
-                        <div class="recommendation-box" id="recommendationBox">
-                            <h4>推奨用途</h4>
-                            <p id="stageRecommendation">-</p>
-                        </div>
-                    </div>
-                    <div class="result-content" id="resultContent">
-                        <!-- 詳細データ -->
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">チェーン名 <span class="required">*</span></label>
+                <input type="text" class="form-control" id="chainName" placeholder="例: ○○スーパー">
             </div>
 
-            <!-- 商品情報入力セクション -->
-            <div class="card">
-                <h3 class="mb-10">📝 商品情報</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label required" id="claimTypeLabel">クレーム種別</label>
-                        <select class="form-control" id="claimType" required>
-                            <option value="">選択してください</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required" id="deliveryDateLabel">納品日</label>
-                        <input type="date" class="form-control date-input" id="deliveryDate" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="captureDateLabel">撮影日</label>
-                        <input type="date" class="form-control date-input" id="captureDate">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required" id="productNameLabel">商品名</label>
-                        <input type="text" class="form-control" id="productName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required" id="chainNameLabel">チェーン名</label>
-                        <input type="text" class="form-control" id="chainName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="storeNameLabel">店舗名</label>
-                        <input type="text" class="form-control" id="storeName">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="quantityLabel">数量</label>
-                        <input type="number" class="form-control" id="claimQuantity" min="0" step="1">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="unitLabel">単位</label>
-                        <select class="form-control" id="claimUnit">
-                            <option value="">選択してください</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="code1Label">汎用コード1</label>
-                        <input type="text" class="form-control" id="code1">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="code2Label">汎用コード2</label>
-                        <input type="text" class="form-control" id="code2">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="code3Label">汎用コード3</label>
-                        <input type="text" class="form-control" id="code3">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" id="claimAmountLabel">希望クレーム請求金額</label>
-                        <input type="number" class="form-control" id="claimAmount" min="0">
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">店舗名 <span class="required">*</span></label>
+                <input type="text" class="form-control" id="storeName" placeholder="例: ○○店">
             </div>
 
-            <!-- アクションボタン -->
-            <div class="action-buttons">
-                <button class="btn btn-info" id="exportBtn" disabled>📋 CSV出力</button>
-                <button class="btn btn-warning" id="resetBtn">🔄 リセット</button>
+            <div class="form-group">
+                <label class="form-label">数量</label>
+                <input type="number" class="form-control" id="claimQuantity" min="0">
             </div>
 
-            <!-- 管理者ボタン（adminのみ） -->
-            <div class="admin-btn-group hidden" id="adminBtnGroup">
-                <button class="btn btn-outline role-admin role-expert" id="adminSettingsBtn">⚙️ 設定</button>
+            <div class="form-group">
+                <label class="form-label">単位</label>
+                <select class="form-select" id="claimUnit">
+                    <option value="">選択してください</option>
+                </select>
             </div>
 
-            <!-- ローディング -->
-            <div class="loading hidden" id="mainLoading">
-                <div class="spinner"></div>
-                <p>解析中...</p>
+            <div class="form-group">
+                <label class="form-label">希望クレーム請求金額</label>
+                <input type="number" class="form-control" id="claimAmount" min="0" placeholder="円">
             </div>
         </div>
-    </div>
 
-    <!-- 管理者設定パネル -->
-    <div class="modal hidden" id="adminPanel">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="admin-title">⚙️ 管理者設定</h3>
+        <!-- アクションボタン -->
+        <div class="card">
+            <button class="btn btn-success btn-block" id="exportBtn" disabled>📊 CSV出力</button>
+            <button class="btn btn-danger" id="resetBtn">🔄 リセット</button>
+            <button class="btn btn-secondary admin-expert" id="settingsBtn">⚙️ 設定</button>
+            <button class="btn btn-primary" id="logoutBtn">🚪 ログアウト</button>
+        </div>
+
+        <!-- 管理者パネル -->
+        <div class="admin-panel hidden" id="adminPanel">
+            <div class="panel-header">
+                <h3>⚙️ 管理設定</h3>
                 <button class="btn-close" id="closeAdminBtn">×</button>
             </div>
-            <div class="modal-body">
-                <!-- 必須項目設定（管理者のみ） -->
-                <div class="role-admin">
-                    <h4 class="mb-10">必須/任意項目設定</h4>
-                    <div class="card">
-                        <div class="tag-input-container" id="requiredFieldsContainer">
-                            <div class="tag-container" id="requiredFieldsTags"></div>
-                            <input type="text" class="tag-input" id="requiredFieldInput" placeholder="必須項目を入力してEnter">
-                        </div>
-                        <small class="form-text">例: クレーム種別, 納品日, 商品名</small>
-                    </div>
-                </div>
 
-                <!-- クレーム種別設定（管理者のみ） -->
-                <div class="role-admin">
-                    <h4 class="mb-10">クレーム種別管理</h4>
-                    <div class="card">
-                        <div class="tag-input-container" id="claimTypesContainer">
-                            <div class="tag-container" id="claimTypesTags"></div>
-                            <input type="text" class="tag-input" id="claimTypeInput" placeholder="クレーム種別を入力してEnter">
-                        </div>
-                        <small class="form-text">例: 過熟, 未熟, くされ, おされ＆傷, カビ, 青ぶく, 黄ぶく</small>
-                    </div>
-                </div>
+            <!-- ユーザー管理 -->
+            <div class="section">
+                <h4>👥 ユーザー管理</h4>
+                <div id="userTableContainer"></div>
+            </div>
 
-                <!-- ユーザー管理（管理者のみ） -->
-                <div class="role-admin">
-                    <h4 class="mb-10">ユーザー管理</h4>
-                    <div class="card">
-                        <div class="user-add-form">
-                            <div class="form-group">
-                                <label class="form-label">新規ユーザーID</label>
-                                <input type="text" class="form-control" id="newUserId">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">パスワード</label>
-                                <input type="password" class="form-control" id="newUserPassword">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">ロール</label>
-                                <select class="form-control" id="newUserRole">
-                                    <option value="user">一般ユーザー</option>
-                                    <option value="expert">エキスパート</option>
-                                    <option value="admin">管理者</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">使用回数制限</label>
-                                <input type="number" class="form-control" id="newUserLimit" value="100" min="1">
-                            </div>
-                            <button class="btn btn-primary" id="addUserBtn">ユーザー追加</button>
-                        </div>
-                        
-                        <h5 class="mt-20 mb-10">登録ユーザー一覧</h5>
-                        <div class="user-table-container" id="userTableContainer">
-                            <!-- ユーザーテーブルはJavaScriptで生成 -->
-                        </div>
-                    </div>
-                </div>
+            <!-- タグ入力設定 -->
+            <div class="section admin-only">
+                <h4>📋 必須項目設定</h4>
+                <div id="requiredFields" class="tag-input-container"></div>
+            </div>
 
-                <!-- カラー設定詳細版（達人・管理者） -->
-                <div class="role-admin role-expert">
-                    <h4 class="mb-10">カラー設定詳細版（将来実装）</h4>
-                    <div class="card">
-                        <div class="color-param-grid">
-                            <div class="param-group">
-                                <label class="param-label">緑色 色相範囲（開始）</label>
-                                <input type="range" class="param-range" id="greenHueMin" min="0" max="360" value="80" disabled>
-                                <span class="param-value">80</span>
-                            </div>
-                            <div class="param-group">
-                                <label class="param-label">緑色 色相範囲（終了）</label>
-                                <input type="range" class="param-range" id="greenHueMax" min="0" max="360" value="140" disabled>
-                                <span class="param-value">140</span>
-                            </div>
-                        </div>
-                        <div class="btn-group mt-20">
-                            <button class="btn btn-success" id="saveColorParamsBtn" disabled>詳細設定保存（将来実装）</button>
-                            <button class="btn btn-warning" id="resetColorParamsBtn" disabled>初期値に戻す（将来実装）</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="section admin-only">
+                <h4>🏷️ クレーム種別管理</h4>
+                <div id="claimTypeManager" class="tag-input-container"></div>
+            </div>
 
-                <!-- CSVインポート機能（管理者のみ） -->
-                <div class="role-admin">
-                    <h4 class="mb-10">CSV設定インポート（将来実装）</h4>
-                    <div class="card">
-                        <div class="form-group">
-                            <label class="form-label">CSVファイル選択</label>
-                            <input type="file" class="form-control" id="csvImportInput" accept=".csv" disabled>
-                        </div>
-                        <button class="btn btn-info" id="importCsvBtn" disabled>設定インポート（将来実装）</button>
-                        <small class="form-text">カラー設定をCSVファイルから読み込みます</small>
-                    </div>
-                </div>
-
-                <!-- パスワード変更機能 -->
-                <div class="role-admin role-expert role-user">
-                    <h4 class="mb-10">パスワード変更（将来実装）</h4>
-                    <div class="card">
-                        <div class="form-group">
-                            <label class="form-label">現在のパスワード</label>
-                            <input type="password" class="form-control" id="currentPassword" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">新しいパスワード</label>
-                            <input type="password" class="form-control" id="newPassword" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">新しいパスワード（確認）</label>
-                            <input type="password" class="form-control" id="confirmPassword" disabled>
-                        </div>
-                        <button class="btn btn-primary" id="changePasswordBtn" disabled>パスワード変更（将来実装）</button>
-                    </div>
-                </div>
+            <!-- CSVインポート（将来実装） -->
+            <div class="section">
+                <h4>📥 CSVインポート</h4>
+                <button class="btn btn-info" disabled>開発予定</button>
             </div>
         </div>
     </div>
