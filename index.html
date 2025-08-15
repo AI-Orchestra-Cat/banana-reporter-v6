@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>バナナレポーター v6.6</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 認証画面 -->
@@ -91,11 +91,11 @@
             </div>
 
             <div class="form-group">
-                <label>商品名 *</label>
-                <select id="productName" class="form-control" required>
-                    <option value="">選択してください</option>
-                </select>
-            </div>
+    <label>商品名 *</label>
+    <select id="productName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
 
             <div class="code-fields">
                 <div class="form-group">
@@ -121,43 +121,55 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>チェーン名 *</label>
-                <select id="chainName" class="form-control" required>
-                    <option value="">選択してください</option>
-                </select>
-            </div>
+
 
             <div class="form-group">
-                <label>店舗名 *</label>
-                <select id="storeName" class="form-control" required>
-                    <option value="">選択してください</option>
-                </select>
-            </div>
+    <label>チェーン名 *</label>
+    <select id="chainName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
 
             <div class="form-group">
-                <label class="form-label">数量</label>
-                <input type="number" class="form-control" id="claimQuantity" min="0">
-            </div>
+    <label>店舗名 *</label>
+    <select id="storeName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
 
-            <div class="form-group">
-                <label>希望クレーム単価</label>
-                <input type="number" id="claimUnitPrice" class="form-control" placeholder="単価を入力">
-            </div>
+<div class="form-group">
+         <label class="form-label">数量</label>
+     <input type="number" class="form-control" id="claimQuantity" min="0">
+</div>
 
-            <div class="form-group">
-                <label>希望クレーム請求金額</label>
-                <input type="number" id="claimAmount" class="form-control" placeholder="自動計算または直接入力">
-            </div>
+<div class="form-group">
+     <label>希望クレーム単価</label>
+     <input type="number" id="claimUnitPrice" class="form-control" placeholder="単価を入力">
+ </div>
 
-            <div class="form-group">
-                <label class="form-label">単位</label>
-                <select class="form-select" id="claimUnit">
-                    <option value="">選択してください</option>
-                </select>
-            </div>
+ <div class="form-group">
+     <label>希望クレーム請求金額</label>
+          <input type="number" id="claimAmount" class="form-control" placeholder="自動計算または直接入力">
+</div>
 
-        </div>  <!-- 商品情報カードの終了 -->
+<div class="form-group">
+    <label class="form-label">単位</label>
+    <select class="form-select" id="claimUnit">
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+</div>  <!-- 商品情報カードの終了 -->
+
+<!-- アクションボタン -->
+<div class="card">
+     <label class="form-label">単位</label>
+     <select class="form-select" id="claimUnit">
+         <option value="">選択してください</option>
+     </select>
+ </div>
+
+</div>  <!-- 商品情報カードの終了 -->
 
         <!-- アクションボタン -->
         <div class="card">
