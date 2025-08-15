@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>バナナレポーター v6.6</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 認証画面 -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-card">
+            <h2 class="auth-title">🍌 バナナレポーター</h2>
+            <div class="form-group">
+                <label class="form-label">ユーザーID</label>
+                <input type="text" class="form-control" id="userId" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">パスワード</label>
+                <input type="password" class="form-control" id="password" autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary btn-block" id="loginBtn">ログイン</button>
+            <div id="loginError" class="error-message hidden"></div>
+        </div>
+    </div>
 
+    <!-- メイン画面 -->
+    <div class="container hidden" id="mainScreen">
+        <div class="header">
+            <h1>🍌 バナナレポーター</h1>
+            <div class="subtitle">品質管理システム v6.6 - <span id="currentUserDisplay"></span></div>
+        </div>
+
+        <!-- 画像入力セクション -->
+        <div class="card">
+            <h3>📸 画像入力</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="cameraBtn">📷 カメラ撮影</button>
+                <button class="btn btn-secondary" id="fileBtn">📁 ファイル選択</button>
+            </div>
+            <input type="file" class="file-input hidden" id="cameraInput" accept="image/*" capture="environment">
+            <input type="file" class="file-input hidden" id="fileInput" accept="image/*">
+            
+            <div class="image-preview" id="imagePreview">
+                <div class="image-placeholder">画像が選択されていません</div>
+            </div>
+
+            <!-- 目視判定セクション -->
+            <div class="visual-judgment-section hidden" id="visualJudgment">
+                <h4>👁️ 目視判定（任意）</h4>
+                <div class="visual-color-chart" id="visualColorChart"></div>
+                <input type="text" class="form-control" id="visualJudgmentMemo" placeholder="判定理由やメモ（任意）">
+            </div>
+
+            <button class="btn btn-success btn-analyze" id="analyzeBtn" disabled>🔍 解析実行</button>
+        </div>
+
+        <!-- カラーチャート -->
+        <div class="card">
+            <h3>🎨 カラーチャート</h3>
+            <div class="color-chart" id="colorChart"></div>
+        </div>
+
+        <!-- 解析結果 -->
+        <div class="card hidden" id="resultCard">
+            <h3>📊 解析結果</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <!-- 商品情報入力 -->
+        <div class="card">
+            <h3>📝 商品情報</h3>
+            
+            <div class="form-group">
+                <label class="form-label">クレーム種別 <span class="required">*</span></label>
+                <select class="form-select" id="claimType">
+                    <option value="">選択してください</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">納品日 <span class="required">*</span></label>
+                <input type="date" class="form-control" id="deliveryDate">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">撮影日 <span class="required">*</span></label>
+                <input type="date" class="form-control" id="captureDate">
+            </div>
+
+            <div class="form-group">
+    <label>商品名 *</label>
+    <select id="productName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+            <div class="code-fields">
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code1Label">汎用コード1</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(1)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code2Label">汎用コード2</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(2)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span id="code3Label">汎用コード3</span>
+                        <button class="edit-btn admin-only" onclick="editCodeLabel(3)">✏️</button>
+                    </label>
+                    <input type="text" class="form-control" id="code3">
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+    <label>チェーン名 *</label>
+    <select id="chainName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+            <div class="form-group">
+    <label>店舗名 *</label>
+    <select id="storeName" class="form-control" required>
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+<div class="form-group">
+         <label class="form-label">数量</label>
+     <input type="number" class="form-control" id="claimQuantity" min="0">
+</div>
+
+<div class="form-group">
+     <label>希望クレーム単価</label>
+     <input type="number" id="claimUnitPrice" class="form-control" placeholder="単価を入力">
+ </div>
+
+ <div class="form-group">
+     <label>希望クレーム請求金額</label>
+          <input type="number" id="claimAmount" class="form-control" placeholder="自動計算または直接入力">
+</div>
+
+<div class="form-group">
+    <label class="form-label">単位</label>
+    <select class="form-select" id="claimUnit">
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+</div>  <!-- 商品情報カードの終了 -->
+
+<!-- アクションボタン -->
+<div class="card">
+     <label class="form-label">単位</label>
+     <select class="form-select" id="claimUnit">
+         <option value="">選択してください</option>
+     </select>
+ </div>
+
+</div>  <!-- 商品情報カードの終了 -->
+
+        <!-- アクションボタン -->
+        <div class="card">
+            <button class="btn btn-success btn-block" id="exportBtn" disabled>📊 CSV出力</button>
+            <button class="btn btn-info btn-block" id="emailBtn" disabled>📧 メール送信</button>
+            <button class="btn btn-danger" id="resetBtn">🔄 リセット</button>
+            <button class="btn btn-secondary admin-expert" id="settingsBtn">⚙️ 設定</button>
+            <button class="btn btn-primary" id="logoutBtn">🚪 ログアウト</button>
+        </div>
+
+        <!-- 管理者パネル -->
+        <div class="admin-panel hidden" id="adminPanel">
+            <div class="panel-header">
+                <h3>⚙️ 管理設定</h3>
+                <button class="btn-close" id="closeAdminBtn">×</button>
+            </div>
+
+            <!-- ユーザー管理 -->
+            <div class="section">
+                <h4>👥 ユーザー管理</h4>
+                <div id="userTableContainer"></div>
+            </div>
+
+            <!-- タグ入力設定 -->
+            <div class="section admin-only">
+                <h4>📋 必須項目設定</h4>
+                <div id="requiredFields" class="tag-input-container"></div>
+            </div>
+
+            <div class="section admin-only">
+                <h4>🏷️ クレーム種別管理</h4>
+                <div id="claimTypeManager" class="tag-input-container"></div>
+            </div>
+
+            <!-- CSVインポート（将来実装） -->
+            <div class="section">
+                <h4>📥 CSVインポート</h4>
+                <button class="btn btn-info" disabled>開発予定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
